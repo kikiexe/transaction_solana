@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Solana Blue App</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+  <h1>Solana Transaction App</h1>
+  <button id="connectButton">Connect Wallet</button>
+
+  <form id="transactionForm">
+    <input type="text" id="recipient" placeholder="Recipient Address" required />
+    <input type="number" id="amount" placeholder="Amount (SOL)" step="0.0001" required />
+    <button type="submit">Send</button>
+  </form>
+
+  <p id="status"></p>
+  <div id="loadingSpinner" style="display:none;">🔄 Processing...</div>
+  <p id="errorMsg" style="color:red;"></p>
+</div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@1.95.1/lib/index.iife.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
