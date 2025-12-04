@@ -1,51 +1,36 @@
-# Solana Transaction App (Node.js Version)
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-A simple web-based application for sending SOL (Solana cryptocurrency) transactions via Phantom wallet integration.
+## Getting Started
 
-This app allows users to:
-- Connect their Phantom wallet
-- Enter a recipient address and amount
-- Send SOL to the recipient
-- Automatically send a 0.01 SOL transaction fee to the developer's wallet
-
->  **This project is still under development.** Some features may not work as expected, and improvements are ongoing.
-
----
-
-## Technologies Used
-
-- Node.js
-- Express.js
-- @solana/web3.js
-- JavaScript (vanilla)
-- Phantom Wallet
-
----
-
-## How It Works
-
-1. Users connect their Phantom wallet via frontend
-2. Enter recipient address and amount of SOL
-3. The backend processes the transaction and sends:
-   - `amount` to recipient
-   - `0.01 SOL` to developer fee address
-
----
-## Status
-This project is a work in progress.
-Planned features:
-
-Transaction history
-
-Enhanced frontend UI
-
-Error handling improvements
-
-QR code scanning
-## Development Setup
+First, run the development server:
 
 ```bash
-git clone https://github.com/kikiexe/transaction_solana.git
-cd transaction_solana
-npm install
-npm start
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+
+## Learn More
+
+To learn more about Next.js, take a look at the following resources:
+
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+
+## Deploy on Vercel
+
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
