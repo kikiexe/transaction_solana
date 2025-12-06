@@ -1,32 +1,74 @@
 // src/components/ui/StatusMessage.tsx
 import React from "react";
+import { CheckCircle, AlertCircle, Info, Loader2 } from "lucide-react";
 
 interface StatusMessageProps {
   status: {
-    type: 'success' | 'error' | 'processing' | 'idle';
+    type: 'success' | 'error' | 'processing' | 'idle' | 'info' | 'warning';
     message: string;
   } | null;
+  onClose?: () => void;
 }
 
-export const StatusMessage: React.FC<StatusMessageProps> = ({ status }) => {
+export const StatusMessage: React.FC = ({ status, onClose }) => {
   if (!status || status.type === 'idle') return null;
 
-  const getStyles = () => {
-    switch (status.type) {
-      case 'error':
-        return "bg-red-900/50 text-red-200 border-red-700";
-      case 'success':
-        return "bg-green-900/50 text-green-200 border-green-700";
-      case 'processing':
-        return "bg-blue-900/50 text-blue-200 border-blue-700 animate-pulse";
-      default:
-        return "bg-gray-800 text-gray-200";
+  const configs = {
+    error: {
+      bg: "bg-red-50",
+      border: "border-red-500",
+      text: "text-red-700",
+      icon: 
+    },
+    success: {
+      bg: "bg-green-50",
+      border: "border-green-500",
+      text: "text-green-700",
+      icon: 
+    },
+    processing: {
+      bg: "bg-blue-50",
+      border: "border-blue-500",
+      text: "text-blue-700",
+      icon: 
+    },
+    info: {
+      bg: "bg-blue-50",
+      border: "border-blue-500",
+      text: "text-blue-700",
+      icon: 
+    },
+    warning: {
+      bg: "bg-yellow-50",
+      border: "border-yellow-500",
+      text: "text-yellow-700",
+      icon: 
+    },
+    idle: {
+      bg: "bg-gray-50",
+      border: "border-gray-500",
+      text: "text-gray-700",
+      icon: 
     }
   };
 
+  const config = configs[status.type];
+
   return (
-    <div className={`p-4 rounded-lg border text-center font-medium mt-4 ${getStyles()}`}>
-      {status.message}
-    </div>
+    
+      
+        {config.icon}
+      
+      
+        
+          {status.message}
+        
+      
+      {onClose && (
+        
+          
+        
+      )}
+    
   );
 };

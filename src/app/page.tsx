@@ -1,194 +1,185 @@
+// src/app/page.tsx
 "use client";
 
-import { useState, useMemo } from "react";
-import { useWallet, useConnection } from "@solana/wallet-adapter-react";
-import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
-import { Transaction, SystemProgram, LAMPORTS_PER_SOL, PublicKey } from "@solana/web3.js";
+import { useState } from "react";
+import { Send, Zap, Shield, Network, ArrowRight, Star } from "lucide-react";
+import Link from "next/link";
 
-// Hooks & Utils
-import { useSolPrice } from "../hooks/useSolPrice";
-import { parseInputText } from "../lib/utils/parsing";
-import { Recipient } from "../types";
-
-// Components
-import { InputForm } from "../components/sender/InputForm";
-import { StatusMessage } from "../components/ui/StatusMessage";
-import { TransactionLog } from "../components/sender/TransactionLog";
-
-// --- CONFIG ---
-const MY_WALLET_ADDRESS = new PublicKey("ECBjShk4F5A34568iLhJuMkFbA6aVjcqv5UKKz7VnBqi"); 
-const FEE_USD = 1.0;
-// --------------
+// Mock reviews
+const REVIEWS = [
+  { id: 1, name: "Alex M.", avatar: "AM", rating: 5 },
+  { id: 2, name: "Sarah K.", avatar: "SK", rating: 5 },
+  { id: 3, name: "John D.", avatar: "JD", rating: 5 },
+];
 
 export default function Home() {
-  const { connection } = useConnection();
-  const { publicKey, sendTransaction } = useWallet();
-  const { price: solPrice, loading: priceLoading } = useSolPrice();
-
-  // State UI
-  const [inputText, setInputText] = useState("");
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [status, setStatus] = useState<{ type: 'success'|'error'|'processing'|'idle', message: string } | null>(null);
-  const [logs, setLogs] = useState<any[]>([]);
-
-  // Computed Values (Hitung otomatis saat input berubah)
-  const parsedData = useMemo(() => parseInputText(inputText), [inputText]);
-  
-  const totalToSend = parsedData.isValid && parsedData.recipients 
-    ? parsedData.recipients.reduce((acc, curr) => acc + curr.amount, 0)
-    : 0;
-
-  const feeInSol = solPrice > 0 ? FEE_USD / solPrice : 0;
-
-  // --- FUNGSI UTAMA: KIRIM ---
-  const handleSend = async () => {
-    if (!publicKey || !parsedData.isValid || !parsedData.recipients) return;
-
-    setIsProcessing(true);
-    setStatus({ type: 'processing', message: 'Memulai proses transaksi...' });
-    setLogs([]);
-
-    try {
-      // 1. Persiapan Data
-      const recipients = parsedData.recipients;
-      const transaction = new Transaction();
-
-      // 2. Masukkan Fee Platform ($1)
-      transaction.add(
-        SystemProgram.transfer({
-          fromPubkey: publicKey,
-          toPubkey: MY_WALLET_ADDRESS,
-          lamports: Math.round(feeInSol * LAMPORTS_PER_SOL),
-        })
-      );
-
-      // 3. Masukkan Semua Penerima (Batching sederhana < 20 orang)
-      // TODO: Nanti kita upgrade ke "Chunking" loop jika > 20
-      recipients.forEach((r: Recipient) => {
-        transaction.add(
-          SystemProgram.transfer({
-            fromPubkey: publicKey,
-            toPubkey: r.address,
-            lamports: Math.round(r.amount * LAMPORTS_PER_SOL),
-          })
-        );
-      });
-
-      // 4. Kirim ke Network
-      const signature = await sendTransaction(transaction, connection);
-      
-      // Log UI
-      setLogs(prev => [...prev, { 
-        id: Date.now().toString(), 
-        message: `Transaksi dikirim! Menunggu konfirmasi...`, 
-        status: 'pending',
-        signature 
-      }]);
-
-      // 5. Konfirmasi
-      await connection.confirmTransaction(signature, "confirmed");
-
-      setStatus({ type: 'success', message: 'Semua pengiriman berhasil!' });
-      setLogs(prev => [...prev, { 
-        id: Date.now().toString() + 'done', 
-        message: `Sukses! Transaksi confirmed.`, 
-        status: 'success' 
-      }]);
-
-      setInputText(""); // Reset form
-
-    } catch (error: any) {
-      console.error(error);
-      setStatus({ type: 'error', message: error.message || "Terjadi kesalahan saat mengirim." });
-      setLogs(prev => [...prev, { 
-        id: Date.now().toString(), 
-        message: `Gagal: ${error.message}`, 
-        status: 'error' 
-      }]);
-    } finally {
-      setIsProcessing(false);
-    }
-  };
+  const [activeTab, setActiveTab] = useState("features");
 
   return (
-    <main className="min-h-screen bg-[#0f172a] text-white flex justify-center p-4 sm:p-8">
-      <div className="w-full max-w-3xl space-y-6">
-        
-        {/* Header Card */}
-        <div className="bg-[#1e293b] p-8 rounded-2xl border border-gray-700 shadow-2xl text-center">
-          <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-linear-to-r from-purple-400 to-pink-600 mb-2">
-            Solana Bulk Sender
-          </h1>
-          <p className="text-gray-400 text-sm mb-6">
-            Kirim SOL ke banyak alamat sekaligus. Hemat waktu & tenaga.
+    <main className="w-full flex flex-col">
+      {/* ================= HERO SECTION ================= */}
+      <section className="relative w-full px-8 py-20 flex flex-col lg:flex-row gap-16">
+        {/* Left */}
+        <div className="flex-1">
+          {/* Massive Typography */}
+          <div className="text-7xl font-black leading-none mb-6">
+            <div>BU</div>
+            <div>LK</div>
+          </div>
+
+          <div className="text-orange-500 font-mono mb-4"> $1789 • NOW AVAILABLE • DESIGN</div>
+
+          {/* Description */}
+          <p className="max-w-lg text-lg mb-6">
+            THE ULTRA-FAST SOLANA BULK SENDER. SEND SOL TO HUNDREDS OF ADDRESSES IN
+            SECONDS. BUILT FOR SCALE AND SPEED, OPTIMIZED FOR MAXIMUM EFFICIENCY.
           </p>
-          
-          <div className="flex justify-center">
-            <WalletMultiButton style={{ background: '#4f46e5', borderRadius: '12px' }} />
+
+          {/* Bottom Tags */}
+          <div className="flex gap-4 text-sm font-bold">
+            <span>ONE OF A KIND</span>
+            <span>CRYPTO</span>
+            <span>TOOL</span>
           </div>
         </div>
 
-        {/* Main App Logic */}
-        {publicKey ? (
-          <div className="bg-[#1e293b] p-6 rounded-2xl border border-gray-700 shadow-xl">
-            
-            {/* Info Bar */}
-            <div className="flex flex-wrap justify-between items-center bg-[#0f172a] p-4 rounded-xl mb-6 border border-gray-800">
-              <div className="text-sm">
-                <p className="text-gray-400">Harga SOL</p>
-                <p className="font-bold text-green-400">
-                  {priceLoading ? "..." : `$${solPrice.toFixed(2)}`}
-                </p>
-              </div>
-              <div className="text-sm text-right">
-                <p className="text-gray-400">Estimasi Total Kirim</p>
-                <p className="font-bold text-white">{totalToSend.toFixed(4)} SOL</p>
+        {/* Right: Terminal Preview */}
+        <div className="flex-1">
+          <div className="bg-black text-green-400 p-6 rounded-xl font-mono text-sm shadow-xl">
+            {/* Header */}
+            <div className="flex items-center gap-2 mb-4">
+              <div className="w-3 h-3 rounded-full bg-red-500"></div>
+              <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+              <div className="w-3 h-3 rounded-full bg-green-500"></div>
+              <span className="ml-3 text-white">bulk-sender-v2.0</span>
+            </div>
+
+            {/* Terminal Content */}
+            <div className="space-y-1">
+              <p>$ solana bulk-send _</p>
+
+              <p>→ Initializing connection...</p>
+              <p className="text-green-500">✓ Connected to Solana Devnet</p>
+              <p>→ Loading recipients (500)...</p>
+              <p className="text-green-500">✓ All addresses validated</p>
+              <p>→ Creating transaction batch...</p>
+              <p>⚡ Processing 500 transfers...</p>
+              <p className="text-green-500">✓ Confirmed: 7xF9...a2Bc</p>
+
+              <div className="pt-2 text-white">
+                <p>Total: 450.5 SOL</p>
+                <p>Fee: 0.005 SOL</p>
+                <p>Time: 1.2s</p>
               </div>
             </div>
 
-            {/* Input Form */}
-            <InputForm 
-              value={inputText} 
-              onChange={setInputText} 
-              disabled={isProcessing} 
-            />
-
-            {/* Validation Error (Realtime) */}
-            {!parsedData.isValid && inputText.trim() !== "" && (
-              <p className="text-red-400 text-sm mt-2">⚠️ {parsedData.message}</p>
-            )}
-
-            {/* Summary & Action Button */}
-            <div className="mt-6 border-t border-gray-700 pt-6">
-              <div className="flex justify-between text-sm mb-4 text-gray-400">
-                <span>Penerima: {parsedData.recipients?.length || 0} alamat</span>
-                <span>Platform Fee: {feeInSol.toFixed(6)} SOL ($1)</span>
-              </div>
-
-              <button
-                onClick={handleSend}
-                disabled={isProcessing || !parsedData.isValid || !parsedData.recipients?.length || priceLoading}
-                className={`w-full py-4 rounded-xl font-bold text-lg transition-all transform active:scale-95
-                  ${isProcessing || !parsedData.isValid 
-                    ? "bg-gray-700 text-gray-500 cursor-not-allowed" 
-                    : "bg-linear-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 shadow-lg hover:shadow-purple-500/25 text-white"
-                  }`}
-              >
-                {isProcessing ? "Sedang Memproses..." : "🚀 Kirim Massal Sekarang"}
-              </button>
+            {/* Progress Bar */}
+            <div className="w-full h-2 bg-gray-700 mt-4 rounded">
+              <div className="h-full w-3/4 bg-green-500 rounded"></div>
             </div>
-
-            {/* Status & Logs */}
-            <StatusMessage status={status} />
-            <TransactionLog logs={logs} />
-
           </div>
-        ) : (
-          <div className="text-center p-10 text-gray-500">
-            👆 Hubungkan wallet di atas untuk memulai.
+        </div>
+
+        {/* Sidebar */}
+        <aside className="absolute right-6 top-6 hidden xl:block text-sm">
+          <p className="font-bold mb-2">MULTIPLE CONNECTIVITY OPTIONS</p>
+          <ul className="space-y-1 opacity-70">
+            <li>• SOLANA DEVNET/MAINNET</li>
+            <li>• PHANTOM WALLET SUPPORT</li>
+            <li>• SOLFLARE INTEGRATION</li>
+            <li>• REAL-TIME VALIDATION</li>
+            <li>• INSTANT CONFIRMATION</li>
+            <li>• 500+ RECIPIENTS SUPPORT</li>
+            <li>• SUB-2S PROCESSING TIME</li>
+          </ul>
+        </aside>
+      </section>
+
+      {/* ================= FEATURES SECTION ================= */}
+      <section className="px-8 py-20">
+        <h2 className="text-4xl font-black mb-4">WHY BULK?</h2>
+        <p className="text-lg mb-12">BUILT DIFFERENT. WORKS BETTER.</p>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <FeatureCard
+            icon={<Zap />}
+            title="LIGHTNING SPEED"
+            stat="<2s"
+            description="Process 500+ transactions in under 2 seconds. Powered by Solana's high-performance blockchain."
+          />
+
+          <FeatureCard
+            icon={<Shield />}
+            title="BULLET-PROOF"
+            stat="99.9%"
+            description="Real-time validation. Multi-sig support. Your funds are protected at every step."
+          />
+
+          <FeatureCard
+            icon={<Network />}
+            title="INFINITE SCALE"
+            stat="10k+"
+            description="From 10 to 10,000 recipients. Our infrastructure scales with your ambition."
+          />
+        </div>
+      </section>
+
+      {/* ================= CTA ================= */}
+      <section className="px-8 py-20 text-center">
+        <h2 className="text-4xl font-black mb-4">READY TO SEND?</h2>
+        <p className="mb-8">Connect your wallet and start sending in 30 seconds.</p>
+
+        <Link
+          href="/sender"
+          className="px-8 py-4 bg-black text-white rounded-xl inline-flex items-center gap-2 hover:bg-gray-900 transition"
+        >
+          LAUNCH APP <ArrowRight />
+        </Link>
+      </section>
+
+      {/* ================= FOOTER ================= */}
+      <footer className="px-8 py-16 border-t text-sm">
+        <div className="flex flex-col md:flex-row justify-between gap-4">
+          <div className="font-black text-xl">BULKSEND</div>
+
+          <div className="flex gap-6">
+            <Link href="#">TWITTER</Link>
+            <Link href="#">DISCORD</Link>
+            <Link href="#">DOCS</Link>
+            <Link href="#">GITHUB</Link>
           </div>
-        )}
-      </div>
+        </div>
+
+        <div className="mt-6 opacity-60">
+          © 2024 BULKSEND. ALL RIGHTS RESERVED.
+        </div>
+      </footer>
     </main>
+  );
+}
+
+function FeatureCard({
+  icon,
+  title,
+  stat,
+  description,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  stat: string;
+  description: string;
+}) {
+  return (
+    <div className="p-6 border rounded-xl shadow-sm hover:shadow-md transition">
+      <div className="flex items-center gap-4 mb-4">
+        <div className="w-12 h-12 bg-black text-white flex items-center justify-center rounded-lg">
+          {icon}
+        </div>
+        <div className="text-2xl font-bold">{stat}</div>
+      </div>
+
+      <h3 className="font-black text-xl mb-2">{title}</h3>
+      <p className="opacity-70">{description}</p>
+    </div>
   );
 }

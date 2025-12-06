@@ -3,15 +3,30 @@ import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import ClientWalletProvider from "../components/providers/WalletProvider";
-import { Navbar } from "../components/layout/Navbar";
+import dynamic from "next/dynamic";
 
-// Setup Font
-const inter = Inter({ subsets: ["latin"], variable: '--font-inter' });
-const mono = JetBrains_Mono({ subsets: ["latin"], variable: '--font-mono' });
+// Dynamic import navbar (no SSR)
+const Navbar = dynamic(
+  () => import("../components/layout/Navbar").then((mod) => mod.Navbar),
+  { ssr: false }
+);
+
+const inter = Inter({ 
+  subsets: ["latin"], 
+  variable: '--font-inter',
+  display: 'swap'
+});
+
+const mono = JetBrains_Mono({ 
+  subsets: ["latin"], 
+  variable: '--font-mono',
+  display: 'swap'
+});
 
 export const metadata: Metadata = {
-  title: "Solana Bulk Sender",
-  description: "Kirim SOL massal dengan gaya.",
+  title: "Bulksend - Solana Bulk Transfer Tool",
+  description: "Send SOL to multiple addresses in one transaction. Fast, secure, and efficient.",
+  keywords: ["solana", "bulk sender", "crypto", "transfer", "blockchain"],
 };
 
 export default function RootLayout({
@@ -20,18 +35,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${inter.variable} ${mono.variable} font-sans bg-black text-white antialiased selection:bg-purple-500 selection:text-white`}>
+    <html lang="en" className={`${inter.variable} ${mono.variable}`}>
+      <body className="font-sans antialiased bg-white text-black">
         <ClientWalletProvider>
-            
-            {/* Navbar dipasang di sini */}
-            <Navbar /> 
-            
-            {/* Konten halaman dikasih padding-top biar gak ketutupan Navbar */}
-            <main className="pt-24 min-h-screen bg-[radial-gradient(ellipse_at_top,var(--tw-gradient-stops))] from-gray-900 via-black to-black">
-                {children}
-            </main>
-
+          <Navbar />
+          <main className="min-h-screen">
+            {children}
+          </main>
         </ClientWalletProvider>
       </body>
     </html>

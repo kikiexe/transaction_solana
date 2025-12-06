@@ -1,7 +1,7 @@
-// src/utils/parsing.ts
+// src/lib/utils/parsing.ts
 import { PublicKey } from "@solana/web3.js";
 import { Recipient, ValidationResult } from "../../types";
-import { isValidSolanaAddress } from "./formatting";
+import { isValidSolanaAddress } from "./validation"; // ✅ FIXED
 
 export const parseInputText = (text: string): ValidationResult => {
   if (!text.trim()) {
@@ -13,10 +13,8 @@ export const parseInputText = (text: string): ValidationResult => {
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i].trim();
-    // Memisahkan berdasarkan spasi atau koma
     const parts = line.split(/[\s,]+/);
 
-    // Cek format baris
     if (parts.length < 2) {
       return { 
         isValid: false, 
@@ -28,7 +26,6 @@ export const parseInputText = (text: string): ValidationResult => {
     const amountStr = parts[1];
     const amount = parseFloat(amountStr);
 
-    // 1. Validasi Address
     if (!isValidSolanaAddress(addressStr)) {
       return { 
         isValid: false, 
@@ -36,7 +33,6 @@ export const parseInputText = (text: string): ValidationResult => {
       };
     }
 
-    // 2. Validasi Jumlah
     if (isNaN(amount) || amount <= 0) {
       return { 
         isValid: false, 
