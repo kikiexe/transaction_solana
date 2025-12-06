@@ -1,130 +1,37 @@
 // src/components/ui/Input.tsx
 import React from "react";
 
-interface InputProps extends React.InputHTMLAttributes {
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   error?: string;
   helper?: string;
 }
 
-export function Input({ 
-  label, 
-  error, 
+export function Input({
+  label,
+  error,
   helper,
   className = "",
-  ...props 
+  ...props
 }: InputProps) {
   return (
-    
+    <div className="flex flex-col gap-1">
       {label && (
-        
-          {label}
-        
+        <label className="text-sm font-medium text-gray-700">{label}</label>
       )}
-      
-      
-      
-      {error && (
-        {error}
+
+      <input
+        className={`border rounded-lg px-3 py-2 text-sm outline-none transition-all 
+        ${error ? "border-red-500" : "border-gray-300"}
+        ${className}`}
+        {...props}
+      />
+
+      {error && <p className="text-xs text-red-500">{error}</p>}
+
+      {!error && helper && (
+        <p className="text-xs text-gray-500">{helper}</p>
       )}
-      
-      {helper && !error && (
-        {helper}
-      )}
-    
+    </div>
   );
 }
-
-// Textarea variant
-export function Textarea({ 
-  label, 
-  error, 
-  helper,
-  className = "",
-  ...props 
-}: React.TextareaHTMLAttributes & {
-  label?: string;
-  error?: string;
-  helper?: string;
-}) {
-  return (
-    
-      {label && (
-        
-          {label}
-        
-      )}
-      
-      
-      
-      {error && (
-        {error}
-      )}
-      
-      {helper && !error && (
-        {helper}
-      )}
-    
-  );
-}
-```
-
----
-
-# ✅ USAGE EXAMPLES
-
-## Button
-```typescript
-import { Button } from "@/components/ui/Button";
-
-
-  Click Me
-
-
-
-  Loading...
-
-```
-
-## Card
-```typescript
-import { Card, CardHeader, CardBody, CardFooter } from "@/components/ui/Card";
-
-
-  
-    Title
-  
-  
-    Content here
-  
-  
-    Footer
-  
-
-```
-
-## Badge
-```typescript
-import { Badge, SuccessBadge } from "@/components/ui/Badge";
-
-Active
-Completed
-```
-
-## Modal
-```typescript
-import { Modal, ModalFooter } from "@/components/ui/Modal";
-import { Button } from "@/components/ui/Button";
-
-
-  Are you sure?
-  
-    Cancel
-    Confirm
-  
-
-```
-
-## LoadingSpinner
-```typescript
-import { LoadingSpinner } from "@/components/ui/LoadingSpinner";

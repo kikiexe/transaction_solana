@@ -3,13 +3,7 @@ import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import ClientWalletProvider from "../components/providers/WalletProvider";
-import dynamic from "next/dynamic";
-
-// Dynamic import navbar (no SSR)
-const Navbar = dynamic(
-  () => import("../components/layout/Navbar").then((mod) => mod.Navbar),
-  { ssr: false }
-);
+import { Navbar } from "../components/layout/Navbar"; // ✅ Direct import (bukan dynamic)
 
 const inter = Inter({ 
   subsets: ["latin"], 
