@@ -7,13 +7,13 @@ import { Transaction, SystemProgram, LAMPORTS_PER_SOL, PublicKey } from "@solana
 
 // Hooks & Utils
 import { useSolPrice } from "../hooks/useSolPrice";
-import { parseInputText } from "../utils/parsing";
+import { parseInputText } from "../lib/utils/parsing";
 import { Recipient } from "../types";
 
 // Components
-import { InputForm } from "../components/bulksender/InputForm";
+import { InputForm } from "../components/sender/InputForm";
 import { StatusMessage } from "../components/ui/StatusMessage";
-import { TransactionLog } from "../components/bulksender/TransactionLog";
+import { TransactionLog } from "../components/sender/TransactionLog";
 
 // --- CONFIG ---
 const MY_WALLET_ADDRESS = new PublicKey("ECBjShk4F5A34568iLhJuMkFbA6aVjcqv5UKKz7VnBqi"); 

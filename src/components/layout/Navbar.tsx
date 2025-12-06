@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { LayoutGrid, Home, BookOpen, LifeBuoy } from "lucide-react";
-import { cn } from "../utils/utils"; // Kalau belum ada utils, hapus 'cn' dan pakai string biasa
+import { cn } from "../../lib/utils/cn";
 
 export function Navbar() {
   const pathname = usePathname();

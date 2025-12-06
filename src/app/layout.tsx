@@ -1,9 +1,9 @@
 // src/app/layout.tsx
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google"; // Import Font Keren
+import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
-import ClientWalletProvider from "../components/contexts/ClientWalletProvider";
-import { Navbar } from "../layout/Navbar"; // Import Navbar yg baru dibuat
+import ClientWalletProvider from "../components/providers/WalletProvider";
+import { Navbar } from "../components/layout/Navbar";
 
 // Setup Font
 const inter = Inter({ subsets: ["latin"], variable: '--font-inter' });

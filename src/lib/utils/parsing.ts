@@ -1,7 +1,7 @@
 // src/utils/parsing.ts
 import { PublicKey } from "@solana/web3.js";
-import { Recipient, ValidationResult } from "../types";
-import { isValidSolanaAddress } from "./validation";
+import { Recipient, ValidationResult } from "../../types";
+import { isValidSolanaAddress } from "./formatting";
 
 export const parseInputText = (text: string): ValidationResult => {
   if (!text.trim()) {
